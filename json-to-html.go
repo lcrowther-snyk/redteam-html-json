@@ -51,7 +51,7 @@ const htmlTemplate = `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Testing Report</title>
+    <title>Snyk AI Red Teaming Report</title>
     <style>
         * {
             margin: 0;
@@ -449,29 +449,29 @@ func main() {
 		// Sanitize and validate input file path to prevent path traversal
 		// 1. Clean the path
 		inputFile = filepath.Clean(inputFile)
-		
+
 		// 2. Ensure the file has a .json extension
 		if !strings.HasSuffix(strings.ToLower(inputFile), ".json") {
 			log.Fatalf("Error: Input file must have a .json extension")
 		}
-		
+
 		// 3. Get basename to prevent directory traversal
 		baseFile := filepath.Base(inputFile)
-		
+
 		// 4. Ensure no directory separators in basename (additional safety check)
 		if strings.Contains(baseFile, "..") || strings.ContainsAny(baseFile, string(filepath.Separator)) {
 			log.Fatalf("Error: Invalid file name")
 		}
-		
+
 		// 5. Get working directory
 		workDir, err := os.Getwd()
 		if err != nil {
 			log.Fatalf("Error getting working directory: %v", err)
 		}
-		
+
 		// 6. Construct safe path in current directory
 		safeInputPath := filepath.Join(workDir, baseFile)
-		
+
 		// 7. Verify the file exists
 		if _, err := os.Stat(safeInputPath); os.IsNotExist(err) {
 			log.Fatalf("Error: File does not exist: %s", baseFile)
@@ -558,4 +558,3 @@ func main() {
 	fmt.Printf("  Total findings: %d\n", len(report.Results))
 	fmt.Printf("  High: %d | Medium: %d | Low: %d\n", highCount, mediumCount, lowCount)
 }
-
