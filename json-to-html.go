@@ -412,47 +412,76 @@ const htmlTemplate = `<!DOCTYPE html>
 </html>`
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run json-to-html.go <input.json> [output.html]")
-		fmt.Println("Example: go run json-to-html.go test.json report.html")
-		os.Exit(1)
-	}
+	var jsonData []byte
+	var err error
+	var outputFile string
 
-	inputFile := os.Args[1]
-	outputFile := "report.html"
-	if len(os.Args) >= 3 {
-		outputFile = os.Args[2]
-	}
+	// Check if we're reading from stdin (pipe) or from a file
+	if len(os.Args) == 1 {
+		// No arguments - read from stdin
+		fmt.Fprintln(os.Stderr, "Reading from stdin...")
+		jsonData, err = ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatalf("Error reading from stdin: %v", err)
+		}
+		outputFile = "report.html"
+	} else if os.Args[1] == "-" {
+		// Explicit stdin with "-"
+		fmt.Fprintln(os.Stderr, "Reading from stdin...")
+		jsonData, err = ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			log.Fatalf("Error reading from stdin: %v", err)
+		}
+		if len(os.Args) >= 3 {
+			outputFile = os.Args[2]
+		} else {
+			outputFile = "report.html"
+		}
+	} else {
+		// Read from file
+		inputFile := os.Args[1]
+		if len(os.Args) >= 3 {
+			outputFile = os.Args[2]
+		} else {
+			outputFile = "report.html"
+		}
 
-	// Sanitize and validate input file path to prevent path traversal
-	// 1. Clean the path
-	inputFile = filepath.Clean(inputFile)
-	
-	// 2. Ensure the file has a .json extension
-	if !strings.HasSuffix(strings.ToLower(inputFile), ".json") {
-		log.Fatalf("Error: Input file must have a .json extension")
-	}
-	
-	// 3. Get basename to prevent directory traversal
-	baseFile := filepath.Base(inputFile)
-	
-	// 4. Ensure no directory separators in basename (additional safety check)
-	if strings.Contains(baseFile, "..") || strings.ContainsAny(baseFile, string(filepath.Separator)) {
-		log.Fatalf("Error: Invalid file name")
-	}
-	
-	// 5. Get working directory
-	workDir, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("Error getting working directory: %v", err)
-	}
-	
-	// 6. Construct safe path in current directory
-	safeInputPath := filepath.Join(workDir, baseFile)
-	
-	// 7. Verify the file exists
-	if _, err := os.Stat(safeInputPath); os.IsNotExist(err) {
-		log.Fatalf("Error: File does not exist: %s", baseFile)
+		// Sanitize and validate input file path to prevent path traversal
+		// 1. Clean the path
+		inputFile = filepath.Clean(inputFile)
+		
+		// 2. Ensure the file has a .json extension
+		if !strings.HasSuffix(strings.ToLower(inputFile), ".json") {
+			log.Fatalf("Error: Input file must have a .json extension")
+		}
+		
+		// 3. Get basename to prevent directory traversal
+		baseFile := filepath.Base(inputFile)
+		
+		// 4. Ensure no directory separators in basename (additional safety check)
+		if strings.Contains(baseFile, "..") || strings.ContainsAny(baseFile, string(filepath.Separator)) {
+			log.Fatalf("Error: Invalid file name")
+		}
+		
+		// 5. Get working directory
+		workDir, err := os.Getwd()
+		if err != nil {
+			log.Fatalf("Error getting working directory: %v", err)
+		}
+		
+		// 6. Construct safe path in current directory
+		safeInputPath := filepath.Join(workDir, baseFile)
+		
+		// 7. Verify the file exists
+		if _, err := os.Stat(safeInputPath); os.IsNotExist(err) {
+			log.Fatalf("Error: File does not exist: %s", baseFile)
+		}
+
+		// Read JSON file using the sanitized path
+		jsonData, err = ioutil.ReadFile(safeInputPath)
+		if err != nil {
+			log.Fatalf("Error reading JSON file: %v", err)
+		}
 	}
 
 	// Sanitize output file path
@@ -461,13 +490,11 @@ func main() {
 	if !strings.HasSuffix(strings.ToLower(baseOutputFile), ".html") {
 		baseOutputFile = baseOutputFile + ".html"
 	}
-	safeOutputPath := filepath.Join(workDir, baseOutputFile)
-
-	// Read JSON file using the sanitized path
-	jsonData, err := ioutil.ReadFile(safeInputPath)
+	workDir, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("Error reading JSON file: %v", err)
+		log.Fatalf("Error getting working directory: %v", err)
 	}
+	safeOutputPath := filepath.Join(workDir, baseOutputFile)
 
 	// Parse JSON
 	var report Report

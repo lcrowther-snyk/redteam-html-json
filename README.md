@@ -24,7 +24,10 @@ A Go script that converts Snyk Red Team CLI output into beautiful HTML reports w
 curl -LO https://github.com/lcrowther-snyk/readteam-html-json/raw/main/json-to-html
 chmod +x json-to-html
 
-# Use with Snyk Red Team
+# Use with Snyk Red Team (pipe directly)
+snyk redteam --experimental | ./json-to-html
+
+# Or save to file first
 snyk redteam --experimental > results.json
 ./json-to-html results.json report.html
 ```
@@ -83,18 +86,27 @@ GOOS=windows GOARCH=amd64 go build -o json-to-html.exe json-to-html.go
 
 ### Primary Usage: With Snyk Red Team CLI
 
-The tool is designed to work directly with the Snyk Red Team experimental CLI:
+The tool works with Snyk Red Team CLI in multiple ways:
+
+**Option A: Direct Pipe (Recommended)**
 
 ```bash
-# Run Snyk Red Team and generate HTML report in one command
-snyk redteam --experimental > results.json
-./json-to-html results.json report.html
+# Pipe output directly to the tool
+snyk redteam --experimental | ./json-to-html
+
+# Or with a custom output filename
+snyk redteam --experimental | ./json-to-html - report.html
+
+# With configuration file
+snyk redteam --experimental --config=config.yaml | ./json-to-html
 ```
 
-Or pipe directly (if your shell supports it):
+**Option B: Save to File First**
 
 ```bash
-snyk redteam --experimental | tee results.json | ./json-to-html results.json report.html
+# Save output to file, then convert
+snyk redteam --experimental > results.json
+./json-to-html results.json report.html
 ```
 
 ### Standalone Usage
@@ -168,21 +180,31 @@ The HTML report features:
 
 ```bash
 # 1. Clone the repository (if not already done)
-git clone <repository-url>
-cd redteam-html-json
+git clone https://github.com/lcrowther-snyk/readteam-html-json.git
+cd readteam-html-json
 
-# 2. Run Snyk Red Team assessment
-snyk redteam --experimental > results.json
+# 2. Run Snyk Red Team and generate report (all in one command)
+snyk redteam --experimental | ./json-to-html
 
-# 3. Generate HTML report (using pre-built binary)
-./json-to-html results.json report.html
-
-# 4. Open report in browser
+# 3. Open report in browser
 open report.html  # macOS
 # or
 xdg-open report.html  # Linux
 # or
 start report.html  # Windows
+```
+
+### Advanced Usage
+
+```bash
+# Custom output filename
+snyk redteam --experimental | ./json-to-html - my-report.html
+
+# With configuration file
+snyk redteam --experimental --config=redteam-config.yaml | ./json-to-html
+
+# Save JSON and generate HTML
+snyk redteam --experimental | tee results.json | ./json-to-html
 ```
 
 ## Security Notes
