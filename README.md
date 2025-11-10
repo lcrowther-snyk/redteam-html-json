@@ -15,13 +15,13 @@ A Go script that converts Snyk Red Team CLI output into beautiful HTML reports w
 
 **Just download the binary and use it directly:**
 
-1. Download the pre-built binary: [json-to-html](https://github.com/lcrowther-snyk/readteam-html-json/raw/main/json-to-html)
+1. Download the pre-built binary: [json-to-html](https://github.com/lcrowther-snyk/redteam-html-json/raw/refs/heads/main/json-to-html)
 2. Make it executable: `chmod +x json-to-html`
 3. Run it: `./json-to-html results.json report.html`
 
 ```bash
 # Download the binary
-curl -LO https://github.com/lcrowther-snyk/readteam-html-json/raw/main/json-to-html
+curl -LO https://github.com/lcrowther-snyk/redteam-html-json/raw/refs/heads/main/json-to-html
 chmod +x json-to-html
 
 # Use with Snyk Red Team (pipe directly)
@@ -47,7 +47,7 @@ snyk redteam --experimental > results.json
 Download just the binary file (no need to clone the entire repository):
 
 ```bash
-curl -LO https://github.com/OWNER/REPO/raw/main/json-to-html
+curl -LO https://github.com/lcrowther-snyk/redteam-html-json/raw/refs/heads/main/json-to-html
 chmod +x json-to-html
 ```
 
@@ -56,7 +56,7 @@ chmod +x json-to-html
 Or clone the full repository:
 
 ```bash
-git clone https://github.com/OWNER/REPO.git
+git clone https://github.com/lcrowther-snyk/redteam-html-json.git
 cd redteam-html-json
 ./json-to-html results.json report.html
 ```
