@@ -11,7 +11,7 @@ A Go script that converts Snyk Red Team CLI output into beautiful HTML reports w
 - 🎯 Easy-to-read conversation turns with scrollable sections
 - 🔗 Clickable links to target URLs
 
-## Quick Start (macOS Apple Silicon) - for no mac goto "Build from Source" 
+## Quick Start (macOS Apple Silicon) - for non mac goto "Build from Source" 
 
 **Just download the binary and use it directly:**
 
