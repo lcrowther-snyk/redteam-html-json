@@ -17,7 +17,7 @@ A Go script that converts Snyk Red Team CLI output into beautiful HTML reports w
 
 1. Download the pre-built binary: [json-to-html](https://github.com/lcrowther-snyk/redteam-html-json/raw/refs/heads/main/json-to-html)
 2. Make it executable: `chmod +x json-to-html`
-3. Update mac permission `xattr -d com.apple.quarantine json-to-html`
+3. Update mac permissions `xattr -d com.apple.quarantine json-to-html`
 4. Run it: `./json-to-html results.json report.html`
 
 ```bash
