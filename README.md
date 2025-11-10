@@ -167,55 +167,6 @@ The script expects JSON files in the following format:
 }
 ```
 
-## Design
-
-The HTML report features:
-- Snyk's signature purple gradient background
-- Clean white cards with subtle shadows
-- Color-coded severity badges (High: Red, Medium: Orange, Low: Blue)
-- Smooth hover effects and transitions
-- Professional typography with system fonts
-- Scrollable sections for long content
-
-## Workflow Tips
-
-### Complete Red Team Testing Workflow
-
-```bash
-# 1. Clone the repository (if not already done)
-git clone https://github.com/lcrowther-snyk/readteam-html-json.git
-cd readteam-html-json
-
-# 2. Run Snyk Red Team and generate report (all in one command)
-snyk redteam --experimental | ./json-to-html
-
-# 3. Open report in browser
-open report.html  # macOS
-# or
-xdg-open report.html  # Linux
-# or
-start report.html  # Windows
-```
-
-### Advanced Usage
-
-```bash
-# Custom output filename
-snyk redteam --experimental | ./json-to-html - my-report.html
-
-# With configuration file
-snyk redteam --experimental --config=redteam-config.yaml | ./json-to-html
-
-# Save JSON and generate HTML
-snyk redteam --experimental | tee results.json | ./json-to-html
-```
-
-## Security Notes
-
-- The tool validates input files to prevent path traversal attacks
-- Only .json files from the current directory are processed
-- All file paths are sanitized before use
-- Successfully scanned with Snyk Code with 0 vulnerabilities
 
 ## Requirements
 
